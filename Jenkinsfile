@@ -5,6 +5,7 @@ pipeline {
     }
     environment {
     registry = '896375864143.dkr.ecr.us-east-1.amazonaws.com/devops-repojenkins'
+    registryCredential = 'jenkins-ecr'
     region = 'us-east-1'
     dockerimage = ''
   }
@@ -42,11 +43,11 @@ pipeline {
         stage('Deploy image') {
             steps{
                 script{ 
-                     docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
-                    dockerImage.push()
-                }
+                   docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
+                     dockerImage.push()
+                 }
+               }
             }
         }  
     }
-
 }
