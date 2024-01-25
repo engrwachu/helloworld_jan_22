@@ -4,7 +4,7 @@ pipeline {
         maven 'M2_HOME'
     }
     environment {
-    registry = '896375864143.dkr.ecr.us-east-1.amazonaws.com/devops-repo
+    registry = '896375864143.dkr.ecr.us-east-1.amazonaws.com/devops-repojenkins'
     region = 'us-east-1'
     dockerimage = ''
   }
