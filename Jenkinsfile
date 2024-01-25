@@ -7,7 +7,7 @@ pipeline {
     registry = '896375864143.dkr.ecr.us-east-1.amazonaws.com/devops-repojenkins'
     registryCredential = 'jenkins-ecr'
     region = 'us-east-1'
-    dockerimage = ''
+     dockerimage = ''
   }
     stages {
         stage('Checkout'){
