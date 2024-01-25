@@ -3,12 +3,20 @@ pipeline {
     tools{
         maven 'M2_HOME'
     }
+    environment {
+    registry = '896375864143.dkr.ecr.us-east-1.amazonaws.com/devops-repo
+    region = 'us-east-1'
+    dockerimage = ''
+  }
     stages {
-        stage('Build') {
+        stage('Checkout'){
+            steps{
+                git branch: 'main', url: 'https://github.com/engrwachu/helloworld_jan_22.git'
+            }
+        }
+        stage('Code Build') {
             steps {
-                sh 'mvn clean'
-                sh 'mvn install'
-                sh 'mvn package'
+                sh 'mvn clean package'
             }
         }
         stage('Test') {
@@ -16,16 +24,29 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('Deploy') {
+        stage('Build Image') {
             steps {
-                echo 'Deploy Step'
-                sleep 10
+                script{
+                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
+                } 
             }
         }
-        stage('Docker') {
-            steps {
-                echo 'Image step'
+        stage('docker login'){
+            steps{
+                script{
+                    sh 'aws ecr get-login-password --region "${region}"| docker login --username AWS --password-stdin "${registry}"'
+                }
             }
         }
+
+        stage('Deploy image') {
+            steps{
+                script{ 
+                     docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
+                    dockerImage.push()
+                }
+            }
+        }  
     }
+
 }
