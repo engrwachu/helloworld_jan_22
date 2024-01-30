@@ -4,10 +4,10 @@ pipeline {
         maven 'M2_HOME'
     }
     environment {
-        registry = '896375864143.dkr.ecr.us-east-1.amazonaws.com/devops-repojenkins'
-        registryCredential = 'jenkins-ecr'
-        dockerimage = ''
-    }
+    registry = '896375864143.dkr.ecr.us-east-1.amazonaws.com/devops-repojenkins'
+    region = 'us-west-2'
+    dockerimage = ''
+  }
     stages {
         stage('Checkout'){
             steps{
@@ -31,12 +31,18 @@ pipeline {
                 } 
             }
         }
+        stage('docker login'){
+            steps{
+                script{
+                    sh 'aws ecr get-login-password --region "${us-east-1}"| docker login --username AWS --password-stdin "${registry}"'
+                }
+            }
+        }
+
         stage('Deploy image') {
             steps{
                 script{ 
-                    docker.withRegistry("https://"+registry,"ecr:us-east-1:"+registryCredential) {
-                        dockerImage.push()
-                    }
+                    dockerImage.push()
                 }
             }
         }  
